@@ -1,0 +1,1114 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>小蕃专属人格测试</title>
+  <style>
+    :root {
+      --paper: #fffaf3;
+      --ink: #262220;
+      --muted: #746a63;
+      --line: #eaded3;
+      --accent: #ff7b9c;
+      --accent-deep: #d94772;
+      --green: #4f9a5b;
+      --card: rgba(255, 255, 255, 0.82);
+      --shadow: 0 18px 45px rgba(101, 66, 43, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding-bottom: 88px;
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background:
+        linear-gradient(rgba(255, 250, 243, 0.9), rgba(255, 250, 243, 0.95)),
+        repeating-linear-gradient(0deg, transparent 0 31px, rgba(255, 123, 156, 0.12) 32px),
+        repeating-linear-gradient(90deg, transparent 0 31px, rgba(86, 158, 113, 0.1) 32px);
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .app {
+      width: min(100%, 520px);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 18px 16px 28px;
+    }
+
+    .screen {
+      display: none;
+      animation: rise 0.34s ease both;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    #quiz.active {
+      display: grid;
+      min-height: calc(100vh - 46px);
+      align-content: center;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .cover {
+      min-height: calc(100vh - 46px);
+      display: grid;
+      align-content: center;
+      gap: 18px;
+    }
+
+    .sticker {
+      width: fit-content;
+      max-width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--accent-deep);
+      background: rgba(255, 255, 255, 0.76);
+      font-size: 13px;
+      box-shadow: 0 8px 20px rgba(255, 123, 156, 0.12);
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+      padding: 24px 20px;
+    }
+
+    .hero:before {
+      content: "";
+      position: absolute;
+      inset: 14px auto auto -22px;
+      width: 95px;
+      height: 28px;
+      background: rgba(255, 205, 119, 0.45);
+      transform: rotate(-12deg);
+    }
+
+    h1,
+    h2,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      position: relative;
+      font-size: clamp(34px, 10vw, 52px);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      position: relative;
+      margin-top: 14px;
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 15px;
+    }
+
+    .primary-btn,
+    .ghost-btn {
+      width: 100%;
+      min-height: 52px;
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+    }
+
+    .primary-btn {
+      color: white;
+      background: linear-gradient(135deg, #ff7b9c, #ff9f68);
+      box-shadow: 0 14px 28px rgba(217, 71, 114, 0.24);
+      font-weight: 700;
+    }
+
+    .ghost-btn {
+      color: var(--accent-deep);
+      background: rgba(255, 255, 255, 0.75);
+      border: 1px solid var(--line);
+      font-weight: 700;
+    }
+
+    .primary-btn:active,
+    .ghost-btn:active,
+    .option:active {
+      transform: scale(0.985);
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .progress {
+      flex: 1;
+      height: 9px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.75);
+      border: 1px solid var(--line);
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      width: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #ff7b9c, #ffca7a);
+      transition: width 0.22s ease;
+    }
+
+    .question-card,
+    .result-card,
+    .info-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+
+    .question-card {
+      padding: 20px;
+    }
+
+    .question-title {
+      margin-top: 0;
+      font-size: 25px;
+      line-height: 1.35;
+      letter-spacing: 0;
+    }
+
+    .question-media {
+      display: none;
+      width: 100%;
+      margin-top: 16px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.76);
+    }
+
+    .question-media.active {
+      display: block;
+    }
+
+    .question-media img,
+    .question-media video {
+      display: block;
+      width: 100%;
+      max-height: 340px;
+      object-fit: contain;
+      background: rgba(255, 250, 243, 0.85);
+    }
+
+    .options {
+      display: grid;
+      gap: 12px;
+      margin-top: 22px;
+    }
+
+    .option {
+      width: 100%;
+      min-height: 54px;
+      padding: 13px 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.78);
+      color: var(--ink);
+      text-align: left;
+      cursor: pointer;
+      line-height: 1.45;
+      transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+    }
+
+    .option.selected {
+      border-color: rgba(255, 123, 156, 0.8);
+      background: rgba(255, 230, 237, 0.82);
+    }
+
+    .option strong {
+      display: inline-grid;
+      place-items: center;
+      width: 25px;
+      height: 25px;
+      margin-right: 8px;
+      border-radius: 999px;
+      color: white;
+      background: var(--accent);
+      font-size: 13px;
+      vertical-align: middle;
+    }
+
+    .option-content {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      vertical-align: middle;
+    }
+
+    .flag-img {
+      display: block;
+      width: 48px;
+      height: 32px;
+      flex: 0 0 auto;
+      border: 1px solid rgba(38, 34, 32, 0.18);
+      border-radius: 4px;
+      box-shadow: 0 3px 8px rgba(38, 34, 32, 0.08);
+      object-fit: cover;
+    }
+
+    .flag-only .option-content {
+      flex: 1;
+      justify-content: center;
+    }
+
+    .question-actions {
+      margin-top: 16px;
+    }
+
+    .question-actions .primary-btn:disabled {
+      opacity: 0.48;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .result-stack {
+      display: grid;
+      gap: 16px;
+      padding-bottom: 20px;
+    }
+
+    .result-card {
+      overflow: hidden;
+      padding: 18px;
+    }
+
+    .result-hero {
+      text-align: center;
+      padding: 18px 10px 14px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(234, 222, 211, 0.75);
+    }
+
+    .result-hero .label {
+      color: var(--muted);
+      font-size: 24px;
+      line-height: 1.2;
+    }
+
+    .zh-type {
+      margin-top: 10px;
+      font-size: 46px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .en-type {
+      margin-top: 8px;
+      color: var(--green);
+      font-size: 46px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .result-image {
+      display: block;
+      width: min(88%, 340px);
+      max-height: 380px;
+      object-fit: contain;
+      margin: 18px auto 6px;
+      border-radius: 8px;
+      background: transparent;
+    }
+
+    .result-image[src=""],
+    .result-image.broken {
+      display: none;
+    }
+
+    .image-note {
+      display: grid;
+      gap: 6px;
+      margin: 18px auto 4px;
+      padding: 14px;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      background: rgba(255, 250, 243, 0.72);
+      line-height: 1.7;
+      text-align: left;
+    }
+
+    .image-note strong {
+      color: var(--accent-deep);
+    }
+
+    .image-note span {
+      font-size: 13px;
+    }
+
+    .one-line {
+      margin-top: 12px;
+      color: var(--muted);
+      line-height: 1.8;
+      text-align: left;
+    }
+
+    .info-card {
+      padding: 18px;
+    }
+
+    .small-title {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .main-type {
+      margin-top: 10px;
+      font-size: 38px;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      max-width: 100%;
+      min-height: 35px;
+      margin-top: 16px;
+      padding: 6px 13px;
+      border: 1px solid #d9e8df;
+      border-radius: 999px;
+      color: #536b5b;
+      background: #eef7f1;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .hint {
+      margin-top: 16px;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .reading h2 {
+      font-size: 22px;
+      line-height: 1.25;
+    }
+
+    .reading p {
+      margin-top: 14px;
+      color: #403936;
+      line-height: 2;
+      text-align: justify;
+    }
+
+    .actions {
+      display: grid;
+      gap: 10px;
+    }
+
+    .letter-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+
+    .letter-title {
+      font-size: 34px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .letter-text {
+      margin-top: 14px;
+      color: #403936;
+      line-height: 2;
+      font-size: 17px;
+    }
+
+    .letter-image {
+      display: block;
+      width: 100%;
+      max-height: 460px;
+      margin: 18px 0;
+      object-fit: contain;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.74);
+    }
+
+    .music-player {
+      position: fixed;
+      left: 50%;
+      bottom: max(14px, env(safe-area-inset-bottom));
+      z-index: 20;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      width: min(calc(100% - 28px), 490px);
+      min-height: 58px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 250, 243, 0.92);
+      box-shadow: 0 14px 34px rgba(101, 66, 43, 0.18);
+      backdrop-filter: blur(12px);
+      transform: translateX(-50%);
+    }
+
+    .music-player.active {
+      display: flex;
+    }
+
+    .music-info {
+      min-width: 0;
+    }
+
+    .music-title {
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .music-subtitle {
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .music-btn {
+      flex: 0 0 auto;
+      min-width: 86px;
+      min-height: 38px;
+      border: 0;
+      border-radius: 8px;
+      color: #fff;
+      background: linear-gradient(135deg, #ff7b9c, #ff9f68);
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="screen cover active" id="cover">
+      <div class="sticker">小蕊制作中 · 第一章 Demo</div>
+      <div class="hero">
+        <h1>小蕃专属<br />人格测试</h1>
+        <p class="subtitle">这是小蕊做给小蕃的一本会提问的恋爱手账。每答完一小组题，就会解锁一个小蕃的隐藏人格切片。</p>
+      </div>
+      <button class="primary-btn" type="button" id="startBtn">开始测试</button>
+    </section>
+
+    <section class="screen" id="quiz" hidden>
+      <div class="topbar">
+        <span id="stepText">第 1 / 3 题</span>
+        <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+      </div>
+
+      <article class="question-card">
+        <h2 class="question-title" id="questionTitle"></h2>
+        <div class="question-media" id="questionMedia"></div>
+        <div class="options" id="options"></div>
+        <div class="question-actions">
+          <button class="primary-btn" type="button" id="nextBtn" disabled>下一题</button>
+        </div>
+      </article>
+    </section>
+
+    <section class="screen" id="result" hidden>
+      <div class="result-stack">
+        <article class="result-card">
+          <div class="result-hero">
+            <p class="label">你的人格类型是：</p>
+            <div class="zh-type" id="resultZh">八嘎</div>
+            <div class="en-type" id="resultEn">BAGA</div>
+            <img class="result-image" id="resultImage" src="" alt="BAGA人格图片" />
+            <div class="image-note" id="imageNote">
+              <strong>BAGA 角色图待放入</strong>
+              <span>图片位置：assets/1.png、assets/1.jpg、assets/1.jpeg 或 assets/1.webp</span>
+            </div>
+            <p class="one-line" id="resultTagline">经常把人当日本人整。</p>
+          </div>
+        </article>
+
+        <article class="info-card">
+          <p class="small-title"><span id="typeCategory">主</span>鉴定为：</p>
+          <div class="main-type" id="mainType">BAGA（八嘎）</div>
+          <div class="pill" id="matchText">匹配度 200% · 精准命中 3/3 题</div>
+        </article>
+
+        <article class="info-card reading">
+          <h2>该人格的简单解读</h2>
+          <div id="readingText"></div>
+        </article>
+
+        <div class="actions">
+          <button class="primary-btn" type="button" id="continueBtn">继续解锁下一章</button>
+          <button class="ghost-btn" type="button" id="againBtn">再测一次</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="letter" hidden>
+      <div class="result-stack">
+        <article class="letter-card">
+          <h2 class="letter-title">两年快乐宝贝</h2>
+          <div id="letterBody"></div>
+        </article>
+        <div class="actions">
+          <button class="primary-btn" type="button" id="restartBtn">重新开始</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="music-player" id="musicPlayer">
+      <audio id="bgMusic" preload="auto" loop></audio>
+      <div class="music-info">
+        <div class="music-title">纪念日背景音乐</div>
+        <div class="music-subtitle" id="musicStatus">点一下开始播放</div>
+      </div>
+      <button class="music-btn" type="button" id="musicBtn">播放</button>
+    </div>
+  </main>
+
+  <script>
+    const chapters = [
+      {
+        zh: "八嘎",
+        en: "BAGA",
+        image: "1",
+        category: "你的地区类型",
+        tagline: "经常把人当日本人整。",
+        match: "200%",
+        hint: "维度命中度极高，当前结果可视为小蕃的第一人格图像。",
+        questions: [
+          { title: "以下小蕃最爱吃的饭店是？", options: ["寿司郎", "寿司狼", "寿司浪", "寿司琅"] },
+          { title: "小蕃最爱吃的海鲜是？", options: ["三文鱼", "鲤鱼", "小鲤鱼", "双面龟"] },
+          {
+            title: "以下国旗认识哪一个？",
+            flagOnly: true,
+            options: [
+              { text: "", media: '<img class="flag-img" src="assets/flag-jp.svg" alt="日本国旗">' },
+              { text: "", media: '<img class="flag-img" src="assets/flag-lk.svg" alt="斯里兰卡国旗">' },
+              { text: "", media: '<img class="flag-img" src="assets/flag-hn.svg" alt="洪都拉斯国旗">' },
+              { text: "", media: '<img class="flag-img" src="assets/flag-az.svg" alt="阿塞拜疆国旗">' }
+            ]
+          }
+        ],
+        reading: [
+          "当别人在恋爱里推演情绪博弈、试图破解人心迷宫时，BAGA人格选择在寿司郎里参悟人生终极奥义：三文鱼为什么这么好吃。",
+          "BAGA并非真的愚钝，她们只是把大脑的算力全部用于判断“今天吃寿司还是明天吃寿司”这种宇宙级难题。她们的思维路径像一只迷路的小浣熊，上一秒还在认真讨论人生规划，下一秒已经开始研究旋转寿司盘子为什么不会晕。",
+          "BAGA的世界没有太多复杂的阴谋论。别人一句“你怎么了”，她们可能会认真思考三分钟，然后得出结论：“我饿了。”别人说“你是不是不开心”，她们会低头沉思，最后小声回答：“可能是因为没有三文鱼。”她们的爱不是深不可测的暗流，而是一颗圆滚滚的寿司饭团。看起来简单，咬下去却有一点甜。",
+          "她们也许不太聪明，但她们很真诚；也许经常犯笨，但笨得有声有色、笨得理直气壮、笨得让人想把她们装进保温袋里带走。"
+        ]
+      },
+      {
+        zh: "不太聪明",
+        en: "FOOL",
+        image: "2",
+        category: "你的聪慧程度类型",
+        tagline: "脑袋有点尖尖的。",
+        match: "那是很匹配了",
+        hint: "脑袋正在加载，但爱意已经满格。",
+        questions: [
+          { title: "钢铁是怎样炼成的男主角是？", options: ["保罗·克罗沁", "保尔·柯察金", "阿宝"] },
+          { title: "牛排烤熟后会发生什么反应？", options: ["辛德拉反应", "美德拉反应", "美拉德反应"] },
+          { title: "左边和右边的哪个是蒋一帆？", media: { type: "image", name: "2.1" }, options: ["左边", "右边", "不确定再看看"] },
+          { title: "视频中女生这是在干什么？", media: { type: "video", name: "2.2" }, options: ["偷地雷", "偷红薯", "偷鸡蛋"] }
+        ],
+        reading: [
+          "当别人在恋爱里复盘情绪细节、分析亲密关系的底层逻辑时，不太聪明型人格正在原地加载中：“所以……我们刚刚是在吵架，还是在聊天？”",
+          "不太聪明型女友并非没有智慧，她们只是把脑细胞随机分配给了生活里的奇怪角落。她们可能记不住今天星期几，却能精准记住你上次说“这个好吃”时的表情；她们可能分不清东南西北，却能在人群里一眼找到你。",
+          "不太聪明型女友不擅长搞复杂套路。她们想你了，就会直接靠过来；生气了，也藏不太住，脸上写着“我现在正在努力生气，请尊重我的努力”。最可怕的是，她们有时候连自己为什么生气都忘了，只剩下一种很坚定的委屈感。",
+          "她们的爱意没有精密算法，只有笨拙但稳定的重复确认。“你还喜欢我吗？”“那现在呢？”"
+        ]
+      },
+      {
+        zh: "小福贵",
+        en: "COOK",
+        image: "3",
+        category: "你的生活类型",
+        tagline: "喜欢做饭拦不住的。",
+        match: "主要看发挥",
+        hint: "厨房战绩起伏巨大，但心意永远热乎。",
+        questions: [
+          { title: "这个是什么东西？", media: { type: "image", name: "3.1" }, options: ["松茸面包", "烤焦的面包", "不太能确定"] },
+          { title: "什么时候赔我锅？", media: { type: "image", name: "3.2" }, options: ["明天", "现在", "不打算赔"] },
+          { title: "这是谁做的呀？", media: { type: "image", name: "3.3" }, options: ["我我我", "蒋一帆", "脚一滑"] },
+          { title: "这又是谁做的呀？", media: { type: "image", name: "3.4" }, options: ["JIO", "12:12", "似乎是我"] }
+        ],
+        reading: [
+          "当别人在厨房里严格称量克数、控制火候、遵循食谱的科学秩序时，小福贵型人格已经举着锅铲，站在灶台前开启了命运炼金术：“我感觉这个时候应该加一点灵魂。”",
+          "小福贵型女友的厨房不是厨房，是研发中心，是试验田，是中华小当家与黑暗料理界的边境线。她们做饭从不完全相信菜谱，因为菜谱在她们眼里只是建议，真正的主厨，要听从内心的召唤。",
+          "她们的天赋极不稳定。状态好的时候，随手一炒都像被灶王爷摸过头，香气四溢，锅气升腾，吃一口让人怀疑她是不是背着你去新东方进修了三年。状态不好的时候，厨房会陷入一种神秘的沉默，锅里的东西看起来像刚从副本里掉落的未知材料。",
+          "你不能说她没天赋，因为她真的会偶尔做出神菜。你也不能说她有天赋，因为她下一顿可能会端出一盘足以让筷子迟疑、味蕾报警、祖先托梦的作品。",
+          "她们的爱也像做菜，配方不固定，火候看心情，结果有惊喜，也有惊吓。但她们每一次端出来时，眼睛都亮亮的，像在献上一份刚从宇宙厨房里偷来的秘密配方：“你尝一口嘛，就一小口。”",
+          "好不好吃不重要，重要的是你敢不敢吃。"
+        ]
+      },
+      {
+        zh: "皇帝",
+        en: "KING",
+        image: "4",
+        category: "你的职业类型",
+        tagline: "练得身形似鹤形。",
+        match: "80%",
+        hint: "圣旨未必很多，但眼神已经批阅完毕。",
+        questions: [
+          { title: "为什么经常打对象？", options: ["帮他按摩", "缓解压力", "强身健体"] },
+          { title: "对象忘记回消息时会怎么做？", options: ["没事呀可能他在忙", "可能他很辛苦忘记了帮他点个咖啡", "行 好 你给我等着吧"] },
+          { title: "本人忘记回消息的时候会怎么做？", options: ["“对不起宝贝我忘记了让你担心了”", "“哎呀宝贝我没看到，让你等了这么久”", "不回就不回呗"] },
+          { title: "吵架吵到一半意识到似乎是自己错了，你会？", options: ["“对不起宝贝，是我不对”", "“宝贝我下次不会这样了”", "我怎么会错？？？？"] }
+        ],
+        reading: [
+          "当别人在恋爱里反思沟通方式、复盘谁对谁错时，皇帝型人格已经缓缓坐上龙椅，翻开奏折，淡淡批了一句：“此事，容后再议。但朕没有错。”",
+          "皇帝型女友的世界观非常稳定。她不是不讲道理，她只是认为道理最终应当向她朝贡。世间万物皆可商量，唯独“她会不会错”这件事，属于祖宗成法，不可轻议。",
+          "她们并非真的霸道，她们只是天生带一点帝王气象。你迟到三分钟，她会开始冷脸监国；你说错一句话，她会立刻开启御前质询；你试图解释，她会微微抬眼，用一种“爱卿，你最好想清楚再说”的眼神看着你。",
+          "皇帝型女友最经典的逻辑是：“我可以错，但我不会犯错。”这句话听起来像悖论，实际上是皇权运行的底层代码。如果事实证明她错了，那说明事实需要重新解释；如果证据证明她错了，那说明证据立场不够坚定；如果你证明她错了，那说明你今天胆子有点大。",
+          "她们的霸道不是冷酷的霸道，而是一种毛茸茸的专制。她可以嘴上说“随便你”，但眼神已经写好了圣旨；她可以说“我无所谓”，但空气中已经出现了无形的九族连坐提示。你若识相，就应当立刻领会：所谓无所谓，意思是“朕要看看你有没有悟性”。"
+        ]
+      },
+      {
+        zh: "可人",
+        en: "CUUUTE",
+        image: "5",
+        category: "你的性格类型",
+        tagline: "你先感受下我这一拳的空气呢。",
+        match: "1000%",
+        hint: "可爱不是技能，是本人正在发生。",
+        questions: [
+          { title: "本人这么可爱平时有什么秘诀吗？", options: ["妈妈生的好", "传女不传男", "其实都是我装的"] },
+          { title: "我可以掐你一下吗？", options: ["可以", "好呀", "可以掐两下"] },
+          { title: "以后还能这么可爱吗？", options: ["以后的事情交给以后", "那肯定啊兄弟", "OKOK"] }
+        ],
+        reading: [
+          "当别人在恋爱里追求成熟、理性、松弛感的时候，可爱型人格正在用一种很严肃的表情，把自己的小脾气摆到桌面上：“我没有撒娇，我是在表达立场。”",
+          "可爱型女友不是普通意义上的萌。她们不是那种软乎乎、甜腻腻、每天都在发射爱心光波的类型。她们的可爱更像一只自以为很威严的小猫，明明走路都快被自己的尾巴绊倒了，还要假装自己是森林之王。",
+          "她们有一种很神奇的反差感。想被哄，但不能直接说。想贴贴，但要装作只是路过。明明很开心，还要把嘴角压下去，努力维持一种“也就一般吧”的冷静表情。结果眼睛已经亮得像刚开机的小夜灯，整个人都在泄密。",
+          "可爱型女友的笨，不是智力上的笨，是一种行为逻辑上的可爱短路。她们可能上一秒还在嘴硬：“我才不需要你陪。”下一秒就坐在旁边不动了，用余光疯狂巡视你有没有跟上来。你要是真没跟，她还会生气：“你怎么真的不来啊？”",
+          "可爱型女友的杀伤力不在于会撒娇，而在于她们根本不知道自己什么时候最可爱。她们认真辩解的时候可爱，嘴硬失败的时候可爱，假装不在乎的时候可爱，偷偷开心又憋不住的时候更可爱。像一颗包装纸很凶、里面却是草莓味的糖。"
+        ]
+      },
+      {
+        zh: "向日葵",
+        en: "SUN FLOWER",
+        image: "6",
+        category: "你的植物类型",
+        tagline: "拥抱太阳。",
+        match: "500%",
+        hint: "晒一晒太阳，爱意和电量一起回满。",
+        questions: [
+          { title: "事情偶尔不顺利会怎么办？", options: ["难过一小下马上干碎困难！", "吃点好的睡一觉再来一次！", "没事呀反正都会过去的"] },
+          { title: "没事的时候更喜欢在家躺着还是出去玩？", options: ["那肯定是出门晒太阳啊", "一看到孙骁睿躺着就来气", "要不是孙骁睿我肯定天天出去"] },
+          { title: "最喜欢约会的地点？", options: ["午后公园", "夜班河边", "深夜酒吧", "清晨早市"] },
+          { title: "最喜欢的天气？", options: ["太阳当空照", "多云有点凉", "下雨好空气", "不潮不要钱"] }
+        ],
+        reading: [
+          "当别人在爱情里反复内耗、阴暗爬行、把自己关进情绪地下室时，向日葵型人格已经拉开窗帘，站在阳光底下开始进行光合作用：“晒一下太阳，感觉又能活了。”",
+          "向日葵型女友的生命力不是普通的生命力，是一种“被生活揍了两拳还能拍拍土继续开花”的生命力。她们不一定永远开心，也不是没有脆弱的时候，但她们很擅长把自己重新扶起来，像一株被风吹歪的小花，第二天又悄悄把脑袋转向太阳。",
+          "她们爱晒太阳，爱晴天，爱那种脸上被光照到、整个人慢慢恢复电量的感觉。别人充电靠咖啡，她们充电靠阳光；别人回血靠睡觉，她们回血靠找一块有太阳的地方，把自己摆好。",
+          "向日葵型女友的坚韧不是硬邦邦的逞强，而是一种柔软但不服输的韧性。她们可以委屈，可以掉眼泪，可以说“我今天真的有点累”，但很少会彻底趴下。她们像一颗小太阳电池板，哪怕阴天也会努力捕捉一点光。",
+          "和她们恋爱，你会发现她们不是只会被照亮的人。她们自己也会发光。你低落的时候，她不会站在高处说教你，而是蹲下来陪你晒一会儿太阳；你觉得世界灰灰的时候，她会很认真地告诉你：“那我们先去吃点热乎的，再想办法。”",
+          "她们的爱很直接，也很有温度。不是轰轰烈烈的大火，而是晒过被子的味道，是冬天手心里的一杯热饮，是“没关系，我们慢慢来”的稳定感。她们不一定能立刻解决所有问题，但她们会让人觉得：日子好像还能继续往前走。"
+        ]
+      },
+      {
+        zh: "N边型战士",
+        en: "ACE",
+        image: "7",
+        category: "你的技能类型",
+        tagline: "好像去过夏威夷。",
+        match: "500%",
+        hint: "技能点很多，爱意也很会发挥。",
+        questions: [
+          { title: "你是不是那个脚一滑！小红书美妆大博主！！我知道你！！", options: ["随便做一做就出名了", "小博主小博主"] },
+          { title: "听说你会弹钢琴？", options: ["9级而已", "雕虫小技"] },
+          { title: "而且还会画画吗？", options: ["手到擒来", "略懂略懂"] },
+          { title: "并且还会游泳？", options: ["自由泳蝶泳仰泳蛙泳简简单单啦", "不足挂齿"] },
+          { title: "啊？你还会冲浪吗！", options: ["L2而已啦", "随便学学啦"] },
+          { title: "听说你秋招也很厉害？", options: ["也就只有库洛字节快手而已", "害一般般吧"] },
+          { title: "等等，你还是年级第一保研的吗！", options: ["嘻嘻是我", "也没有很难啦"] }
+        ],
+        reading: [
+          "当别人在恋爱里研究“如何成为更好的自己”时，ACE型人格已经从海里冲浪回来，顺手弹了一首琴，画了一张画，补了个妆，给手上画了海娜，然后打开邮箱：“哦，秋招又来一个offer。”",
+          "ACE型女友不是普通的六边形战士，她像是女娲捏人的时候不小心把技能点全点满了。别人学一个爱好要入门三个月，她今天看两眼教程，明天就能开始营业；别人简历上写“兴趣广泛”，她简历上更像在写《人类多功能使用说明书》。",
+          "她会冲浪，是真的站在浪上的那种冲浪；也会网上冲浪，烂梗接得比5G还快。她会弹琴，手指一落下去，空气都开始变得高级。她会画画，随手一笔就像有点东西。她会化妆，能把自己画成氛围感本人，也能把别人画成“妈呀这是谁”。她会画海娜，手一伸出来像刚从异域神话副本里走出来。她还会游泳，生命体征稳定得像海洋亲女儿。",
+          "但ACE型最可怕的地方，不是她会这么多，而是她学习能力强到让人怀疑她是不是偷偷开了人生外挂。年级第一，保研华南理工，秋招offer拿到手软。别人还在纠结“我到底适合什么”，她已经在多个赛道同时刷新个人纪录。",
+          "你以为她这么强，应该是冷冰冰的大女主。错。ACE型女友往往强得很自然，甚至有点笨笨的可爱。她不是每时每刻都在端着“优秀人设”，她也会突然犯傻，突然唱烂梗歌，突然因为一顿好吃的开心到原地开花。只是别人犯傻是真的短路，她犯傻像是高配系统偶尔弹出一个可爱bug。"
+        ]
+      }
+    ];
+
+    const letters = ["A", "B", "C", "D"];
+    let chapterIndex = 0;
+    let current = 0;
+    const answers = [];
+
+    const cover = document.querySelector("#cover");
+    const quiz = document.querySelector("#quiz");
+    const result = document.querySelector("#result");
+    const letter = document.querySelector("#letter");
+    const startBtn = document.querySelector("#startBtn");
+    const nextBtn = document.querySelector("#nextBtn");
+    const againBtn = document.querySelector("#againBtn");
+    const continueBtn = document.querySelector("#continueBtn");
+    const restartBtn = document.querySelector("#restartBtn");
+    const questionTitle = document.querySelector("#questionTitle");
+    const questionMedia = document.querySelector("#questionMedia");
+    const optionsEl = document.querySelector("#options");
+    const stepText = document.querySelector("#stepText");
+    const progressBar = document.querySelector("#progressBar");
+    const resultZh = document.querySelector("#resultZh");
+    const resultEn = document.querySelector("#resultEn");
+    const resultTagline = document.querySelector("#resultTagline");
+    const mainType = document.querySelector("#mainType");
+    const matchText = document.querySelector("#matchText");
+    const typeCategory = document.querySelector("#typeCategory");
+    const readingText = document.querySelector("#readingText");
+    const imageNote = document.querySelector("#imageNote");
+    const letterBody = document.querySelector("#letterBody");
+    const musicPlayer = document.querySelector("#musicPlayer");
+    const bgMusic = document.querySelector("#bgMusic");
+    const musicBtn = document.querySelector("#musicBtn");
+    const musicStatus = document.querySelector("#musicStatus");
+
+    function showScreen(screen) {
+      [cover, quiz, result, letter].forEach((item) => {
+        item.classList.remove("active");
+        item.hidden = true;
+      });
+      screen.hidden = false;
+      screen.classList.add("active");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function getQuestions() {
+      return chapters[chapterIndex].questions;
+    }
+
+    function loadMediaElement(container, media) {
+      container.innerHTML = "";
+      container.classList.remove("active");
+      if (!media) return;
+
+      const extensions = media.type === "video" ? ["mp4", "mov", "webm", ""] : ["png", "jpg", "jpeg", "webp", ""];
+      let index = 0;
+      const element = media.type === "video" ? document.createElement("video") : document.createElement("img");
+      if (media.type === "video") {
+        element.controls = true;
+        element.playsInline = true;
+      }
+      element.alt = "题目图片";
+      container.appendChild(element);
+
+      function tryNext() {
+        if (index >= extensions.length) {
+          container.classList.remove("active");
+          container.innerHTML = "";
+          return;
+        }
+        element.src = extensions[index] ? `assets/${media.name}.${extensions[index]}` : `assets/${media.name}`;
+        index += 1;
+      }
+
+      element.onload = () => container.classList.add("active");
+      element.onloadeddata = () => container.classList.add("active");
+      element.onerror = tryNext;
+      tryNext();
+    }
+
+    function loadFlexibleImage(image, baseName) {
+      const candidates = ["png", "jpg", "jpeg", "webp", ""].map((type) => type ? `assets/${baseName}.${type}` : `assets/${baseName}`);
+      let index = 0;
+
+      function tryNext() {
+        if (index >= candidates.length) {
+          image.remove();
+          return;
+        }
+        image.src = candidates[index];
+        index += 1;
+      }
+
+      image.onerror = tryNext;
+      tryNext();
+    }
+
+    function renderQuestion() {
+      const questions = getQuestions();
+      const chapter = chapters[chapterIndex];
+      const question = questions[current];
+      questionTitle.textContent = question.title;
+      stepText.textContent = `第 ${current + 1} / ${questions.length} 题`;
+      progressBar.style.width = `${(current / questions.length) * 100}%`;
+      nextBtn.disabled = answers[current] === undefined;
+      nextBtn.textContent = current === questions.length - 1 ? "查看结果" : "下一题";
+      loadMediaElement(questionMedia, question.media);
+
+      optionsEl.innerHTML = "";
+      optionsEl.classList.toggle("flag-only", !!question.flagOnly);
+      question.options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.className = "option";
+        button.type = "button";
+        const optionText = typeof option === "string" ? option : option.text;
+        const optionMedia = typeof option === "string" ? "" : option.media;
+        const optionLabel = optionText ? `<span>${optionText}</span>` : "";
+        button.innerHTML = `<strong>${letters[index]}</strong><span class="option-content">${optionMedia || ""}${optionLabel}</span>`;
+        button.setAttribute("aria-label", `${letters[index]} ${optionText || "国旗选项"}`);
+        if (answers[current] === index) {
+          button.classList.add("selected");
+        }
+        button.addEventListener("click", () => {
+          answers[current] = index;
+          nextBtn.disabled = false;
+          document.querySelectorAll(".option").forEach((item) => item.classList.remove("selected"));
+          button.classList.add("selected");
+        });
+        optionsEl.appendChild(button);
+      });
+    }
+
+    startBtn.addEventListener("click", () => {
+      chapterIndex = 0;
+      current = 0;
+      answers.length = 0;
+      renderQuestion();
+      showScreen(quiz);
+    });
+
+    nextBtn.addEventListener("click", () => {
+      if (answers[current] === undefined) return;
+      const questions = getQuestions();
+      if (current < questions.length - 1) {
+        current += 1;
+        renderQuestion();
+      } else {
+        progressBar.style.width = "100%";
+        renderResult();
+        showScreen(result);
+      }
+    });
+
+    againBtn.addEventListener("click", () => {
+      chapterIndex = 0;
+      current = 0;
+      answers.length = 0;
+      renderQuestion();
+      showScreen(quiz);
+    });
+
+    continueBtn.addEventListener("click", () => {
+      if (chapterIndex < chapters.length - 1) {
+        chapterIndex += 1;
+        current = 0;
+        answers.length = 0;
+        renderQuestion();
+        showScreen(quiz);
+      } else {
+        renderLetter();
+        showScreen(letter);
+      }
+    });
+
+    restartBtn.addEventListener("click", () => {
+      chapterIndex = 0;
+      current = 0;
+      answers.length = 0;
+      renderQuestion();
+      showScreen(quiz);
+    });
+
+    musicBtn.addEventListener("click", async () => {
+      if (bgMusic.paused) {
+        try {
+          await bgMusic.play();
+          musicBtn.textContent = "暂停";
+          musicStatus.textContent = "正在播放";
+        } catch (error) {
+          musicStatus.textContent = "浏览器拦截了播放，请再点一次";
+        }
+      } else {
+        bgMusic.pause();
+        musicBtn.textContent = "播放";
+        musicStatus.textContent = "已暂停";
+      }
+    });
+
+    function removeDarkBackground(image) {
+      const source = new Image();
+      source.onload = () => {
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        canvas.width = source.naturalWidth;
+        canvas.height = source.naturalHeight;
+        context.drawImage(source, 0, 0);
+
+        const frame = context.getImageData(0, 0, canvas.width, canvas.height);
+        const pixels = frame.data;
+        for (let index = 0; index < pixels.length; index += 4) {
+          const red = pixels[index];
+          const green = pixels[index + 1];
+          const blue = pixels[index + 2];
+          const brightness = (red + green + blue) / 3;
+          const colorSpread = Math.max(red, green, blue) - Math.min(red, green, blue);
+          if (brightness < 34 && colorSpread < 18) {
+            pixels[index + 3] = 0;
+          } else if (brightness < 52 && colorSpread < 24) {
+            pixels[index + 3] = Math.min(pixels[index + 3], 70);
+          }
+        }
+
+        context.putImageData(frame, 0, 0);
+        image.src = canvas.toDataURL("image/png");
+        image.style.background = "transparent";
+        const note = document.querySelector("#imageNote");
+        if (note) note.remove();
+      };
+      source.onerror = () => {
+        image.classList.add("broken");
+      };
+      source.src = image.src;
+    }
+
+    function loadResultImage(image, baseName) {
+      const candidates = ["png", "jpg", "jpeg", "webp", ""].map((type) => type ? `assets/${baseName}.${type}` : `assets/${baseName}`);
+      let index = 0;
+
+      function tryNext() {
+        if (index >= candidates.length) {
+          image.classList.add("broken");
+          return;
+        }
+        const candidate = candidates[index];
+        index += 1;
+        const tester = new Image();
+        tester.onload = () => {
+          image.src = candidate;
+          image.style.background = "transparent";
+          if (imageNote) imageNote.hidden = true;
+        };
+        tester.onerror = tryNext;
+        tester.src = candidate;
+      }
+
+      tryNext();
+    }
+
+    function loadMusic() {
+      const candidates = ["mp3", "m4a", "aac", "wav", "ogg", ""].map((type) => type ? `assets/20.${type}` : "assets/20");
+      let index = 0;
+
+      function tryNext() {
+        if (index >= candidates.length) {
+          musicPlayer.classList.remove("active");
+          return;
+        }
+        bgMusic.src = candidates[index];
+        index += 1;
+        bgMusic.load();
+      }
+
+      bgMusic.oncanplay = () => {
+        musicPlayer.classList.add("active");
+      };
+      bgMusic.onerror = tryNext;
+      tryNext();
+    }
+
+    function renderResult() {
+      const chapter = chapters[chapterIndex];
+      resultZh.textContent = chapter.zh;
+      resultEn.textContent = chapter.en;
+      resultTagline.textContent = chapter.tagline;
+      typeCategory.textContent = chapter.category;
+      mainType.textContent = `${chapter.en}（${chapter.zh}）`;
+      matchText.textContent = `匹配度 ${chapter.match} · 精准命中 ${chapter.questions.length}/${chapter.questions.length} 题`;
+      readingText.innerHTML = chapter.reading.map((paragraph) => `<p>${paragraph}</p>`).join("");
+      continueBtn.textContent = chapterIndex < chapters.length - 1 ? "继续解锁下一章" : "查看最后一封信";
+      resultImage.classList.remove("broken");
+      resultImage.src = "";
+      if (imageNote) {
+        imageNote.hidden = false;
+        imageNote.querySelector("strong").textContent = `${chapter.en} 角色图待放入`;
+        imageNote.querySelector("span").textContent = `图片位置：assets/${chapter.image}.png、assets/${chapter.image}.jpg、assets/${chapter.image}.jpeg 或 assets/${chapter.image}.webp`;
+      }
+      loadResultImage(resultImage, chapter.image);
+    }
+
+    function renderLetter() {
+      const blocks = [
+        { text: "纪念日总是值得一些很郑重其事的话，但想来想去，最想说的还是一句\n谢谢你一直陪在我身边。\n谢谢你把时间，情绪，小脾气，可爱，包容和理解都分给我一些。", image: "10" },
+        { text: "两年很长，装下了无数我们的幸福和失落，装下了几千张照片和视频，装下了好多好多话，很多个普普通通但因为有你在变得有趣和明媚的一天有一天；但两年也很短，像某天匆匆赶到公园，聊了几句就已经暮色四合。可能爱就有这种能力，让分别的时间慢的无法忍受，又让在一起的每一天飞速流逝。", image: "11" },
+        { text: "我们吹过国际校区的和煦晚风，也吹过长白山零下二十度的恐怖大风；\n去过好多次南村的夜市，也去过几次延吉的早市；", image: "12" },
+        { text: "一起涨过十几斤体重，好像也减掉了七八斤肉；\n两个人走南闯北，咬牙挺过了难熬的实习，也有所收获；", image: "13" },
+        { text: "我们一起做过很多顿饭，厨艺似乎大有长进；\n从开题到中期到预答辩到顺利过审，每次都紧张得咬牙切齿，却总是带一点神秘的小运气；", image: "14" },
+        { text: "看起来两个人都在摆烂，但就是关关难过关关过，可能爱到好的人就是会有好的运气吧；\n成为寿司郎、楼热精神股东，贡献了3000的营业额，按体重分红；", image: "15" },
+        { text: "虽然经常吵的脸红，但没过一会儿还是躺到一起玩手机，或许也是一种难舍难分；\n我们分别过很多次，但每次都会回到这个温暖的小屋。", image: "16" },
+        { text: "你是我这两年收获的最好的礼物。\n希望每天都能亲到蒋一帆肉嘟嘟的脸颊。", image: "17" },
+        { text: "两年快乐宝贝！", image: "18" }
+      ];
+
+      letterBody.innerHTML = "";
+      blocks.forEach((block) => {
+        const paragraph = document.createElement("p");
+        paragraph.className = "letter-text";
+        paragraph.innerHTML = block.text.replace(/\n/g, "<br>");
+        letterBody.appendChild(paragraph);
+
+        const image = document.createElement("img");
+        image.className = "letter-image";
+        image.alt = "纪念日照片";
+        letterBody.appendChild(image);
+        loadFlexibleImage(image, block.image);
+      });
+    }
+
+    const resultImage = document.querySelector("#resultImage");
+    loadMusic();
+  </script>
+</body>
+</html>
